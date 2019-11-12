@@ -1,0 +1,14 @@
+version: '3'
+services:
+  repl:
+    build: .
+    command: /bin/bash
+    ports:
+      - 3000:3000
+      - 39998:39998
+    volumes:
+      - ".:/app"
+      - "lib_data:/root/.m2"
+
+volumes:
+  lib_data:

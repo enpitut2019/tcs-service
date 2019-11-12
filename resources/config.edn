@@ -1,0 +1,6 @@
+{:task-cabinet-server.env/env {}
+ :task-cabinet-server.handler.core/handler {:env #ig/ref :task-cabinet-server.env/env}
+ :task-cabinet-server.handler.core/server
+ {:env #ig/ref :task-cabinet-server.env/env
+  :handler #ig/ref :task-cabinet-server.handler.core/handler
+  :port 3000}}

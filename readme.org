@@ -1,0 +1,60 @@
+* task-cabinet-server
+** Processing
+- [X] authorization system
+- [X] user system
+- [X] task system
+- [ ] implement service (logic) => ref.  https://github.com/MokkeMeguru/tcs-service
+- [ ] connect to database
+
+** Installation
+
+write `profiles.clj` from below code as it is.
+
+
+#+begin_src clojure:profiles.clj
+{:dev {:env {
+             :database-url "jdbc:postgresql://localhost/dev"
+             :clj-env "dev"
+             :vapid-pub "<vapid-pub-key>"
+             :vapid-private "<vapid-client-key>"}}
+ :test {:env {
+              :database-url "jdbc:postgresql://localhost/dev"
+              :clj-env "test"
+              :vapid-pub "<vapid-pub-key>"
+              :vapid-private "<vapid-client-key>"}}}
+#+end_src
+
+** Usage
+
+#+begin_src shell
+docker-compose build
+docker-compose run --service-port repl
+lein repl
+(start)
+#+end_src
+
+accessing http://localhost:3000, You can see swagger view. Call any endpoint according to its description.
+
+** Options
+
+
+** Bugs
+
+
+** That You Think
+
+
+** License
+
+Copyright © 2019 MokkeMeguru
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0.
+
+This Source Code may also be made available under the following Secondary
+Licenses when the conditions for such availability set forth in the Eclipse
+Public License, v. 2.0 are satisfied: GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or (at your
+option) any later version, with the GNU Classpath Exception which is available
+at https://www.gnu.org/software/classpath/license.html.
