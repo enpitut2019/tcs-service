@@ -14,8 +14,8 @@
   (if  (hashers/check password (:password user))
     user nil))
 
-(defn generate-password
-  "generate password
+(defn hash-password
+  "hash password
   args:
   - password: raw password
   returns:
@@ -23,3 +23,4 @@
   "
   [password]
   (hashers/derive password))
+

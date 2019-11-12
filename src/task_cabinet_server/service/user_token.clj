@@ -1,5 +1,6 @@
 (ns task-cabinet-server.service.user-token)
 
+;;; utils ;;;
 (def num-big-little-char
   (map char (concat
               (range 97 123)
@@ -13,7 +14,27 @@
   (nth num-big-little-char (rand num-big-little-char-len)))
 
 (defn random-token
-  ([]
-   (random-token 127))
-  ([length]
-   (apply str (take length (repeatedly random-char)))))
+  [length]
+  (apply str (take length (repeatedly random-char))))
+
+(defn check-token-exists? [id token]
+  "TODO Implement"
+  false)
+
+(defn garanteed-random-token
+  ([id]
+   (garanteed-random-token id 127))
+  ([id length]
+   (let [token (random-token length)]
+     (if-not (check-token-exists? id token)
+       token
+       (garanteed-random-token id)))))
+
+(defn delete-token
+  [id token]
+  ;; ok
+  1)
+
+(defn delete-all-token
+  [id]
+  1)

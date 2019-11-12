@@ -40,13 +40,15 @@ value json
 ```
 
 ## 401
-unauthorized
+unauthorized 
+=> login failed
 ```
 none
 ```
 
 ## 403
 Forbidden
+=> token failed
 ```
 none
 ```
