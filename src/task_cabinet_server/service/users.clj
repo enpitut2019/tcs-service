@@ -18,6 +18,5 @@
 
 
 (defn login [{{{:keys [email password]} :body} :parameters}]
-  
   (let [ user-info (-> {:email email} get-user (check-password password))]
     ))
