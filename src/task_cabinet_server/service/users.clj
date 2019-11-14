@@ -27,8 +27,10 @@
   returns:
   user or nil"
   [db email password]
-  (-> (usql/get-user db :email email)
-      (utils/check-password password)))
+  (let [candidate (usql/get-user db :email email)]
+    (if (:is_deleted candidate)
+      nil
+     (utils/check-password candidate password))))
 
 ;;; handler & spec ;;;
 (s/def ::user-login-body (s/keys :req-un [::users/email ::users/password]))
@@ -134,7 +136,9 @@
           {:status 401}
           (if (zero? (usql/delete-user db {:id id}))
             {:status 404}
-            {:status 200}))))))
+            (do
+              (utsql/delete-all-token db id)
+             {:status 200})))))))
 
 (defn logout-handler
   "logout handler

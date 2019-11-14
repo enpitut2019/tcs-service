@@ -72,9 +72,11 @@
 
 
 
-;; (defonce connecter (jdbc/get-datasource {:jdbcUrl  "jdbc:postgresql://dev_db:5432/tcs_db?user=meguru&password=emacs"}))
+(defonce connecter (jdbc/get-datasource {:jdbcUrl  "jdbc:postgresql://dev_db:5432/tcs_db?user=meguru&password=emacs"}))
 
 ;; (jdbc/execute-one! connecter ["SELECT * FROM users where id = 1"])
 ;; (njs/update! connecter :users {:email "meguru.mokke@gmail.com" :is_deleted false :name "MokkeMeguru" } {:id 1}) 
 ;; (jdbc/execute! connecter ["SELECT * FROM user_token"])
+
+
 ;; (jdbc/execute! connecter ["SELECT * FROM user_device"])

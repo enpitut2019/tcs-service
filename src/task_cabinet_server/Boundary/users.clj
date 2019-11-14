@@ -26,7 +26,6 @@
     (utils/update! spec :users m idm))
   (delete-user [{:keys [spec]} idm]
     (let [email (:email (utils/get-by-id spec :users :id (:id idm)))]
-      (println "will delete email" email)
       (utils/update! spec :users {:is_deleted true :email (str email "-"(:id idm))} idm))))
 
 ;; (extend-protocol Users
