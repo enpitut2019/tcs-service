@@ -78,11 +78,11 @@
   "create user handler
   returns:
   - 400 invalid args
-  - 401 unauthorized"
+  - 409 conflict"
   [{{{:keys [name password email] :as body} :body} :parameters}]
   (if-not (s/valid? ::user-create-body body)  {:status 400}
           (if (already-exists? email)
-            {:status 401}
+            {:status 409}
             (let [id (:id (create-user (update body :password utils/hash-password)))]
               {:status 200
                :body
