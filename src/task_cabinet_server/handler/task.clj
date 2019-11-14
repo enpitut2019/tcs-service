@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.walk :as w]
             [clj-time.coerce :as c]
+            [task-cabinet-server.service.task :as tasks]
             ))
 
 (s/def ::user-id int?)
@@ -76,21 +77,23 @@
     :body ::create-task-params}
    :responses {201 {:body {:result ::create-task-response}}}
    :handler
-   (fn [{:keys [path-params headers parameters]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           user-id (-> path-params :user-id Integer/parseInt)
-           {{:keys [name deadline estimate description category]} :body} parameters]
-       (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
-        (let [res {:name name
-                   :deadline deadline
-                   :estimate estimate}
-              res (if description (assoc res :description description) res)
-              res (if category (assoc res :category category) res)
-              res (assoc res :created_at 1572566412000)
-              res (assoc res :id 2)]
-          {:status 201
-           :body {:result res}})
-        {:status 401})))})
+   tasks/create-task-handler
+   ;; (fn [{:keys [path-params headers parameters]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         user-id (-> path-params :user-id Integer/parseInt)
+   ;;         {{:keys [name deadline estimate description category]} :body} parameters]
+   ;;     (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
+   ;;       (let [res {:name name
+   ;;                  :deadline deadline
+   ;;                  :estimate estimate}
+   ;;             res (if description (assoc res :description description) res)
+   ;;             res (if category (assoc res :category category) res)
+   ;;             res (assoc res :created_at 1572566412000)
+   ;;             res (assoc res :id 2)]
+   ;;         {:status 201
+   ;;          :body {:result res}})
+   ;;       {:status 401})))
+   })
 
 (def get-task-info
   {:summary  "get a task-info"
@@ -100,16 +103,18 @@
    {:path ::task-path-params}
    :responses {200 {:body {:result ::get-task-response}}}
    :handler
-   (fn [{:keys [path-params headers]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           user-id (-> path-params :user-id Integer/parseInt)
-           id (-> path-params :id Integer/parseInt)]
-       (if (and (= id 1) (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
-        {:status 201
-          :body
-         {:result
-          (nth tmp-task-list 0)}}
-        {:status 401})))})
+   tasks/get-task-info-handler
+   ;; (fn [{:keys [path-params headers]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         user-id (-> path-params :user-id Integer/parseInt)
+   ;;         id (-> path-params :id Integer/parseInt)]
+   ;;     (if (and (= id 1) (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
+   ;;      {:status 201
+   ;;        :body
+   ;;       {:result
+   ;;        (nth tmp-task-list 0)}}
+   ;;      {:status 401})))
+   })
 
 (def delete-task
   {:summary  "delete a task-info"
@@ -119,14 +124,16 @@
    {:path ::task-path-params}
    :responses {200 nil}
    :handler
-   (fn [{:keys [path-params headers]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           user-id (-> path-params :user-id Integer/parseInt)
-           id (-> path-params :id Integer/parseInt)]
-       (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
-         (if  (= id 1) {:status 200}
-              {:status 404})
-         {:status 401})))})
+   tasks/delete-task-handler
+   ;; (fn [{:keys [path-params headers]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         user-id (-> path-params :user-id Integer/parseInt)
+   ;;         id (-> path-params :id Integer/parseInt)]
+   ;;     (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
+   ;;       (if  (= id 1) {:status 200}
+   ;;            {:status 404})
+   ;;       {:status 401})))
+   })
 
 (def update-task
   {:summary "update a task information"
@@ -137,22 +144,24 @@
     :body ::task-update-params}
    :responses {200 {:body {:result ::task-update-response}}}
    :handler
-   (fn [{:keys [path-params headers parameters]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           user-id (-> path-params :user-id Integer/parseInt)
-           id (-> path-params :id Integer/parseInt)
-           {{:keys [name deadline estimate description category]} :body} parameters]
-       (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
-         (if (= id 1)
-           (let [res {:name name :deadline deadline :estimate estimate}
-                 res (if description (assoc res :description description) res)
-                 res (if category (assoc res :category category) res)
-                 res (assoc res :created_at 1572566412000)
-                 res (assoc res :updated_at (-> (clj-time.core/now) c/to-long))]
-             {:stastus 200
-              :body {:result res}})
-           {:status 404})
-         {:status 401})))})
+   tasks/update-task-handler
+   ;; (fn [{:keys [path-params headers parameters]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         user-id (-> path-params :user-id Integer/parseInt)
+   ;;         id (-> path-params :id Integer/parseInt)
+   ;;         {{:keys [name deadline estimate description category]} :body} parameters]
+   ;;     (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
+   ;;       (if (= id 1)
+   ;;         (let [res {:name name :deadline deadline :estimate estimate}
+   ;;               res (if description (assoc res :description description) res)
+   ;;               res (if category (assoc res :category category) res)
+   ;;               res (assoc res :created_at 1572566412000)
+   ;;               res (assoc res :updated_at (-> (clj-time.core/now) c/to-long))]
+   ;;           {:stastus 200
+   ;;            :body {:result res}})
+   ;;         {:status 404})
+   ;;       {:status 401})))
+   })
 
 (def complete-task
   {:summary "complete a task"
@@ -160,39 +169,44 @@
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters {:path ::task-path-params}
    :responses {200 nil}
-   :handler (fn [{:keys [path-params headers]}]
-              (let [{:keys [authorization]} (w/keywordize-keys headers)
-                    id (-> path-params :id Integer/parseInt)
-                    user-id (-> path-params :user-id Integer/parseInt)]
-                (if (and (= authorization "gXqi4mnXg8KyuSKS5XlK") (= id 1))
-                  (if (= id 1)
-                    {:status 200}
-                    {:status 404})
-                  {:status 401})))})
+   :handler
+   tasks/complete-task-handler
+   ;; (fn [{:keys [path-params headers]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         id (-> path-params :id Integer/parseInt)
+   ;;         user-id (-> path-params :user-id Integer/parseInt)]
+   ;;     (if (and (= authorization "gXqi4mnXg8KyuSKS5XlK") (= id 1))
+   ;;                (if (= id 1)
+   ;;                  {:status 200}
+   ;;                  {:status 404})
+   ;;                {:status 401})))
+   })
 
 (def get-list-task
-  {:summary "get a task"
+  {:summary "get tasks"
    :description "for debug id and user-id \"1\" authorization \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters {:path ::path-params
                 :query {:all ::all}}
    :responses {200 {:body {:result ::get-task-list-response}}}
    :handler
-   (fn [{:keys [parameters headers path-params]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           user-id (-> path-params :user-id Integer/parseInt)
-           {{:keys [all]} :body} parameters]
-       (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
-         (if all
-          {:status 200
-            :body
-            {:result
-             tmp-task-list}}
-          {:status 200
-           :body
-           {:result
-            (doall (filter #(get  % :finished_at) tmp-task-list))}})
-         {:status 401})))})
+   tasks/get-list-task-handler
+   ;; (fn [{:keys [parameters headers path-params]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         user-id (-> path-params :user-id Integer/parseInt)
+   ;;         {{:keys [all]} :body} parameters]
+   ;;     (if (and (= user-id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
+   ;;       (if all
+   ;;        {:status 200
+   ;;          :body
+   ;;          {:result
+   ;;           tmp-task-list}}
+   ;;        {:status 200
+   ;;         :body
+   ;;         {:result
+   ;;          (doall (filter #(get  % :finished_at) tmp-task-list))}})
+   ;;       {:status 401})))
+   })
 
 (defn task-app [env]
   ["/tcs"

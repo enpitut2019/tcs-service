@@ -37,12 +37,13 @@
 
 (defn get-task
   "m has key :id"
-  [db m]
-  (get tmp-task-list (:id m)))
+  [db k v]
+  (first (filter
+     #(= (:id % ) v) tmp-task-list)))
 
 (defn create-task
   [db m]
-  (assoc m :created_at (utils/now-long)))
+  (assoc (assoc m :created_at (utils/now-long)) :id 1))
 
 (defn delete-task
   "deleted 1
@@ -73,57 +74,53 @@ not found 0"
   "create a task
   returns:
   - 400 invalid args
-  - 403 forbidden
-  "
-  [db]
-  (fn [{:keys [parameters headers path-params]}]
-    (let [{:keys [authorization]} (w/keywordize-keys headers)
-          user-id (-> path-params :user-id Integer/parseInt)
-          {{:keys [name deadline estimate description category] :as body} :body} parameters]
-      (if-not (and (s/valid? ::create-task) (s/valid? ::tokens/token authorization)
-                   (s/valid? ::users/id user-id))
-        {:status 400}
-        (if-not (token/check-token-exists? user-id authorization)
-          {:status 403}
-          {:status 201
-           :body {:result (create-task body)}})))))
+  - 403 forbidden"
+  [{:keys [parameters headers path-params db]}]
+  (let [{:keys [authorization]} (w/keywordize-keys headers)
+        user-id (-> path-params :user-id Integer/parseInt)
+        {:keys [body]} parameters] 
+    (if-not (and (s/valid? ::create-task body) (s/valid? ::tokens/token authorization)
+                 (s/valid? ::users/id user-id))
+      {:status 400}
+      (if-not (token/check-token-exists? db user-id authorization)
+        {:status 403}
+        {:status 201
+         :body {:result (create-task db body)}}))))
 
 (defn get-task-info-handler
   "get task information
   returns:
   - 400 invalid args
   - 403 forbidden
-  - 404 not found
-  "
-  [db]
-  (fn  [{:keys [headers path-params]}]
-    (let [{:keys [authorization]} (w/keywordize-keys headers)
-          user-id (-> path-params :user-id Integer/parseInt)
-          id (-> path-params :id Integer/parseInt)]
-      (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id) (s/valid? ::tokens/token authorization))
-        {:status 400}
-        (if-not (token/check-token-exists? user-id authorization)
-          {:status 403}
-          (if-let [task (get-task {:id id})]
-            {:status 201
-             :body {:result task}}
-            {:status 404}))))))
-
-(defn delet-task-handler
-  "delete a task
-  returns:
-  - 400 invalid args
-  - 403 forbidden
   - 404 not found"
-  [{:keys [path-params headers]}]
+  [{:keys [headers path-params db]}]
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         user-id (-> path-params :user-id Integer/parseInt)
         id (-> path-params :id Integer/parseInt)]
     (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id) (s/valid? ::tokens/token authorization))
       {:status 400}
-      (if-not (token/check-token-exists? user-id authorization)
+      (if (zero? (count (token/check-token-exists? db user-id authorization)))
         {:status 403}
-        (if (zero? (delete-task id))
+        (if-let [task (get-task db :id id)]
+          {:status 201
+           :body {:result task}}
+          {:status 404})))))
+
+(defn delete-task-handler
+  "delete a task
+  returns:
+  - 400 invalid args
+  - 403 forbidden
+  - 404 not found"
+  [{:keys [path-params headers db]}]
+  (let [{:keys [authorization]} (w/keywordize-keys headers)
+        user-id (-> path-params :user-id Integer/parseInt)
+        id (-> path-params :id Integer/parseInt)]
+    (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id) (s/valid? ::tokens/token authorization))
+      {:status 400}
+      (if  (zero? (count (token/check-token-exists? db user-id authorization)))
+        {:status 403}
+        (if (zero? (delete-task db id))
           {:status 404}
           {:status 200})))))
 
@@ -136,22 +133,23 @@ not found 0"
   - 400 invalid args
   - 403 forbidden
   - 404 not found"
-  [{:keys [path-params headers parameters]}]
+  [{:keys [path-params headers parameters db]}]
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         user-id (-> path-params :user-id Integer/parseInt)
         id (-> path-params :id Integer/parseInt)
-        {{:keys [name deadline estimate description category] :as body} :body} parameters]
+        {:keys [body]} parameters]
     (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id)
-                 (s/valid? ::token/token authorization)
+                 (s/valid? ::tokens/token authorization)
                  (s/valid? ::update-task body))
-      {:status 400}
-      (if-not (token/check-token-exists? user-id authorization)
+      (do (s/explain ::update-task body)
+          {:status 400})
+      (if (-> (token/check-token-exists? db user-id authorization) count zero?)
         {:status 403}
-        (if (zero? (update-task (assoc body :id id)))
+        (if (zero? (update-task db (assoc body :id id)))
           {:status 404}
           {:status 200
            :body {:result
-                  (select-keys (get-task {:id id})
+                  (select-keys (get-task db :id id)
                                [:name :deadline :estimate :created_at :updated_at :description :category])}})))))
 
 (defn complete-task-handler
@@ -160,31 +158,31 @@ not found 0"
   - 400 invalid args
   - 403 forbidden
   - 404 not found"
-  [{:keys [path-params headers]}]
+  [{:keys [path-params headers db]}]
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         id (-> path-params :id Integer/parseInt)
         user-id (-> path-params :user-id Integer/parseInt)]
     (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id)
-                 (s/valid? ::token/token authorization))
+                 (s/valid? ::tokens/token authorization))
       {:status 400}
-      (if-not (token/check-token-exists? user-id authorization)
+      (if (-> (token/check-token-exists? db user-id authorization) count zero?)
         {:status 403}
-        (if (zero? (complete-task {:id id}))
+        (if (zero? (complete-task db {:id id}))
           {:status 404}
           {:status 200})))))
 
 (s/def ::all boolean?)
 (defn get-list-task-handler
-  [{:keys [parameters headers path-params]}]
+  [{:keys [parameters headers path-params db]}]
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         user-id (-> path-params :user-id Integer/parseInt)
-        {{:keys [all]} :body} parameters]
+        {{:keys [all]} :query} parameters]
     (if-not (and (s/valid? ::users/id user-id)
                  (s/valid? ::tokens/token authorization)
                  (s/valid? ::all all))
       {:status 400}
-      (if-not (token/check-token-exists? user-id authorization)
+      (if-not (token/check-token-exists? db  user-id authorization)
         {:status 403}
         {:status 200
          :body {:result
-                (get-list-task {:user-id user-id})}}))))
+                (get-list-task db {:user-id user-id})}}))))
