@@ -1,4 +1,6 @@
-(ns task-cabinet-server.service.user-token)
+(ns task-cabinet-server.service.user-token
+  (:require
+   [task-cabinet-server.Boundary.user-token :as utsql]))
 
 ;;; utils ;;;
 (def num-big-little-char
@@ -17,24 +19,27 @@
   [length]
   (apply str (take length (repeatedly random-char))))
 
-(defn check-token-exists? [id token]
-  "TODO Implement"
-  false)
+(defn add-token [db id token]
+  (utsql/add-token db id token)
+  token)
+
+(defn check-token-exists? [db id token]
+  (utsql/get-token db id token))
 
 (defn garanteed-random-token
-  ([id]
-   (garanteed-random-token id 127))
-  ([id length]
+  ([id db]
+   (garanteed-random-token id 127 db))
+  ([id length db]
    (let [token (random-token length)]
-     (if-not (check-token-exists? id token)
-       token
-       (garanteed-random-token id)))))
+     (if (zero? (count (check-token-exists? db id token)))
+       (add-token db id token)
+       (garanteed-random-token id length db)))))
 
-(defn delete-token
-  [id token]
-  ;; ok
-  1)
+;; (defn delete-token
+;;   [db id token]
+;;   ;; ok
+;;   1)
 
-(defn delete-all-token
-  [id]
-  1)
+;; (defn delete-all-token
+;;   [db id]
+;;   1)

@@ -28,7 +28,11 @@
    [task-cabinet-server.handler.task :refer [task-app]]))
 
 
-(defn root-app [env]
+(defn wrap-db [handler db]
+  (fn [request]
+    (handler (assoc request :db db))))
+
+(defn root-app [env db]
   (ring/ring-handler
     (ring/router
       [["/swagger.json"
@@ -115,7 +119,8 @@
                            ;; coercing request parameters
                            coercion/coerce-request-middleware
                            ;; multipart
-                           multipart/multipart-middleware]}})
+                           multipart/multipart-middleware
+                           [wrap-db db]]}})
     (ring/routes
       (swagger-ui/create-swagger-ui-handler
         {:path "/"
@@ -124,11 +129,14 @@
       (ring/create-default-handler))
     {:middleware
      [util/cors-handler
-      wrap-with-logger]}))
+      wrap-with-logger
+      ]}))
 
 
-(defmethod ig/init-key ::handler [ _ {:keys [env]}]
-  (root-app env))
+(defmethod ig/init-key ::handler [ _ {:keys [env db] :as c}]
+  (timbre/info "handler got: env " env)
+  (timbre/info "handler got: database " db)
+  (root-app env db))
 
 (defmethod ig/init-key ::server [_ {:keys [env handler port]}]
   (timbre/info "Server is running in port " port)

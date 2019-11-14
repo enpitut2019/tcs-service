@@ -23,8 +23,7 @@
    :parameters {:body ::user-login-param}
    :responses {200 {:body {:result
                            {:token string? :id int?}}}}
-   :handler users/login-handler
-   })
+   :handler users/login-handler})
 
 (def create-user
   {:summary "create a user"

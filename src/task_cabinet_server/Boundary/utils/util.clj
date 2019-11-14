@@ -27,6 +27,11 @@
       tc/from-long
       tc/to-sql-time time))
 
+(defn sql-to-long [sql-time]
+  (-> sql-time
+      tc/from-sql-time
+      tc/to-long))
+
 (defn sql-now []
   (tc/to-sql-time (t/now)))
 
@@ -43,21 +48,33 @@
       (jdbc/execute! conn sql-command-list))))
 
 (defn insert! [spec table-key m]
+  (println "m" m)
   (with-open [conn (jdbc/get-connection (:datasource spec))]
     (njs/insert! conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 
 (defn update! [spec table-key m idm]
   (with-open [conn (jdbc/get-connection (:datasource spec))]
-    (njs/update! conn table-key m idm)))
+    (:next.jdbc/update-count (njs/update! conn table-key (assoc m :updated_at (sql-now))  idm))))
 
 (defn delete! [spec table-key idm]
   (with-open [conn (jdbc/get-connection (:datasource spec))]
-    (njs/delete! conn table-key idm)))
+    (:next.jdbc/update-count (njs/delete! conn table-key idm))))
 
 (defn find-by-m [spec table-key m]
   (with-open [conn (jdbc/get-connection (:datasource spec))]
     (njs/find-by-keys conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 
-(defn get-by-id [spec table-key id]
+(defn get-by-id [spec table-key k v]
+  (println "get! "k v)
   (with-open [conn (jdbc/get-connection (:datasource spec))]
-    (njs/get-by-id conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
+    (njs/get-by-id conn table-key v k {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
+
+
+
+
+;; (defonce connecter (jdbc/get-datasource {:jdbcUrl  "jdbc:postgresql://dev_db:5432/tcs_db?user=meguru&password=emacs"}))
+
+;; (jdbc/execute-one! connecter ["SELECT * FROM users where id = 1"])
+;; (njs/update! connecter :users {:email "meguru.mokke@gmail.com" :is_deleted false :name "MokkeMeguru" } {:id 1}) 
+;; (jdbc/execute! connecter ["SELECT * FROM user_token"])
+;; (jdbc/execute! connecter ["SELECT * FROM user_device"])
