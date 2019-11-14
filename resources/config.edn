@@ -1,4 +1,11 @@
 {:task-cabinet-server.env/env {}
+
+ :task-cabinet-server.Boundary.utils.sql/sql
+ {:env #ig/ref :task-cabinet-server.env/env}
+
+ :task-cabinet-server.Boundary.utils.migrate/migrate
+ {:env #ig/ref :task-cabinet-server.env/env}
+
  :task-cabinet-server.handler.core/handler {:env #ig/ref :task-cabinet-server.env/env}
  :task-cabinet-server.handler.core/server
  {:env #ig/ref :task-cabinet-server.env/env

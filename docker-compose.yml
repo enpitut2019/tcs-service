@@ -1,5 +1,17 @@
 version: '3'
 services:
+  dev_db:
+    image: postgres
+    ports:
+      - 5565:5432
+    volumes:
+      - "dev_tcs_db:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_USER: meguru
+      POSTGERS_PASSWORD: emacs
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+      POSTGRES_DB: tcs_db
+    restart: always
   repl:
     build: .
     command: /bin/bash
@@ -9,6 +21,9 @@ services:
     volumes:
       - ".:/app"
       - "lib_data:/root/.m2"
+    depends_on:
+      - dev_db
 
 volumes:
+  dev_tcs_db:
   lib_data:
