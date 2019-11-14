@@ -21,6 +21,8 @@
     (utils/delete! spec :user_token {:user_id user-id :token token}))
   (delete-all-token [{:keys [spec]} user-id]
     (utils/delete! spec :user_token {:user_id user-id})))
+
+
 ;; (extend-protocol User-Token
 ;;     task_cabinet_server.Boundary.utils.sql.Boundary
 ;;   (get-user-tokens [{:keys [spec]} {:keys [users/id]}]

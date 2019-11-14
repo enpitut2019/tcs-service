@@ -1,0 +1,35 @@
+sql's function rule
+
+defn funname [db args]
+
+todo:
+how to deal with  deleted user?
+=> deleted user's email exists.
+==> not unique...
+====> if delete user, his email will be <his-email>-<his-user-id>
+
+{
+  "name": "MeguruMokke",
+  "password": "Test001",
+  "email": "meguru.mokke@gmail.com"
+}
+
+USER ALL COMPLETE!
+
+TODO:
+login unauthorize!
+
+{
+  "name": "check server",
+  "deadline": 1573765264448,
+  "estimate": 10
+}
+
+TestPass20
+
+
+task test all clear
+
+
+example: header
+{origin http://localhost:3000, sec-fetch-site same-origin, host localhost:3000, user-agent Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36, content-type application/json, content-length 107, referer http://localhost:3000/index.html, connection keep-alive, accept application/json, accept-language ja,en-US;q=0.9,en;q=0.8,pt;q=0.7,fr;q=0.6, authorization qsH4uT7WgylSZMF3UNlAinglur4i7ZNOaVfq67tgQAfk4KxoIAl8f0osRyJh0h12t5XtJXuezq8xzeL1SQH9nuoSGB9mexDOzlEsYl6jsvrI4m5Xg1EWltSH7jLEDXb, accept-encoding gzip, deflate, br, sec-fetch-mode cors}

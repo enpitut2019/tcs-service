@@ -40,33 +40,6 @@
 (s/def ::get-task-list-response
   (s/* ::abst-task))
 
-(def tmp-task-list
-  [{:id 1
-    :name "Implement Server"
-    :deadline 1573493099290
-    :estimate 40
-    :created_at 1572566411400}
-   {:id 2
-    :name "Implement WebPush"
-    :deadline 1572567452000
-    :estimate 80
-    :created_at 1572566431400
-    :finished_at 1572567432000
-    :category "server"}
-   {:id 3
-    :name "Implement Authorization"
-    :deadline 1572566451400
-    :estimate 60
-    :created_at 1572566441400
-    :category "server"}
-   {:id 4
-    :name "Re: check database structure"
-    :deadline 1572566952000
-    :estimate 100
-    :created_at 1572566411500
-    :finished_at 1572567431000}])
-;; (s/explain ::get-task-list-response tmp-task-list)
-
 
 (def create-task
   {:summary "create a task"
@@ -240,3 +213,30 @@
 ;; (map #(- dataset %) first-clust-mean)
 
 ;; (- [1 2 3 4] 1)
+
+;; (def tmp-task-list
+;;   [{:id 1
+;;     :name "Implement Server"
+;;     :deadline 1573493099290
+;;     :estimate 40
+;;     :created_at 1572566411400}
+;;    {:id 2
+;;     :name "Implement WebPush"
+;;     :deadline 1572567452000
+;;     :estimate 80
+;;     :created_at 1572566431400
+;;     :finished_at 1572567432000
+;;     :category "server"}
+;;    {:id 3
+;;     :name "Implement Authorization"
+;;     :deadline 1572566451400
+;;     :estimate 60
+;;     :created_at 1572566441400
+;;     :category "server"}
+;;    {:id 4
+;;     :name "Re: check database structure"
+;;     :deadline 1572566952000
+;;     :estimate 100
+;;     :created_at 1572566411500
+;;     :finished_at 1572567431000}])
+;; ;; (s/explain ::get-task-list-response tmp-task-list)

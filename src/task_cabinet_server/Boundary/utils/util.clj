@@ -25,7 +25,7 @@
 (defn long-to-sql [long-time]
   (-> long-time
       tc/from-long
-      tc/to-sql-time time))
+      tc/to-sql-time))
 
 (defn sql-to-long [sql-time]
   (-> sql-time
@@ -48,8 +48,8 @@
       (jdbc/execute! conn sql-command-list))))
 
 (defn insert! [spec table-key m]
-  (println "m" m)
   (with-open [conn (jdbc/get-connection (:datasource spec))]
+    (println "m" m)
     (njs/insert! conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 
 (defn update! [spec table-key m idm]
@@ -81,4 +81,6 @@
 
 ;; (jdbc/execute! connecter ["SELECT * FROM user_device"])
  ;; (-> (sql-now) sql-to-long println )
+(jdbc/execute! connecter ["SELECT * FROM task where id = 7"])
+(njs/find-by-keys connecter :task {:id 2, :user_id 1})
 
