@@ -17,7 +17,9 @@
   returns:
   user or nil"
   [db email]
-  (usql/get-user db  :email email))
+  (let [res(usql/get-user db  :email email)]
+    (if (empty? res) nil
+        res)))
 
 (defn conform-user
   "check user's information is valid

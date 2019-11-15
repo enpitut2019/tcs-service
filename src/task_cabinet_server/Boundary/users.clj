@@ -16,10 +16,12 @@
 (extend-protocol Users
   task_cabinet_server.Boundary.utils.sql.Boundary
   (get-user [{:keys [spec]} k v]
-    (cond->
-        (utils/get-by-id spec :users  k v)
-      #(:created_at %)  (update  :created_at utils/sql-to-long)
-      #(:updated_at %) (update :updated_at utils/sql-to-long)))
+    (let [res (cond->
+               (utils/get-by-id spec :users  k v)
+             #(:created_at %)  (update  :created_at utils/sql-to-long)
+             #(:updated_at %) (update :updated_at utils/sql-to-long))
+          res (into {} (remove (fn [[k v]] (nil? v)) res))]
+      res))
   (create-user [{:keys [spec]} user]
     (utils/insert! spec :users user))
   (update-user [{:keys [spec]} m idm]
