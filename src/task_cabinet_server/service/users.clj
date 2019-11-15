@@ -18,6 +18,7 @@
   user or nil"
   [db email]
   (let [res(usql/get-user db  :email email)]
+    (println "already exists?" res)
     (if (empty? res) nil
         res)))
 
