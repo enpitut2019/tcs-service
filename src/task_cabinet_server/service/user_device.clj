@@ -65,16 +65,18 @@
       {:status 400}
       (if (-> (token/check-token-exists? db user-id authorization) count zero?)
         {:status 403}
-        (do
-          (println "result"
-                   (udsql/check-device-exists? db
-                                               {:user_id user-id :endpoint endpoint :auth auth :p256dh p256dh}))
-          (if-not (-> (udsql/check-device-exists? db
-                                                  {:user_id user-id :endpoint endpoint :auth auth :p256dh p256dh})
-                      count zero?)
-            {:status 409}
-            {:status 201
-             :body {:result (udsql/add-device  db {:user_id user-id :endpoint endpoint :auth auth :p256dh p256dh})}}))))))
+        (if-not (-> (udsql/check-device-exists? db
+                                                {:user_id user-id :endpoint endpoint :auth auth :p256dh p256dh})
+                    count zero?)
+          {:status 409}
+          (let [res (udsql/add-device  db {:user_id user-id :endpoint endpoint :auth auth :p256dh p256dh})
+                res (assoc res :keys {})
+                res (assoc-in res [:keys :auth] (:auth res))
+                res (assoc-in res [:keys :p256dh] (:p256dh res))
+                res (dissoc res :auth)
+                res (dissoc res :p256dh)])
+          {:status 201
+           :body {:result res}})))))
 
 (defn remove-device-handler
   "
