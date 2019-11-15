@@ -33,3 +33,12 @@ task test all clear
 
 example: header
 {origin http://localhost:3000, sec-fetch-site same-origin, host localhost:3000, user-agent Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36, content-type application/json, content-length 107, referer http://localhost:3000/index.html, connection keep-alive, accept application/json, accept-language ja,en-US;q=0.9,en;q=0.8,pt;q=0.7,fr;q=0.6, authorization qsH4uT7WgylSZMF3UNlAinglur4i7ZNOaVfq67tgQAfk4KxoIAl8f0osRyJh0h12t5XtJXuezq8xzeL1SQH9nuoSGB9mexDOzlEsYl6jsvrI4m5Xg1EWltSH7jLEDXb, accept-encoding gzip, deflate, br, sec-fetch-mode cors}
+
+
+{
+  "endpoint": "https://fcm.googleapis.com/fcm/send/f8ZrPSJxQVk:APA91bF2DMtsF8Wyhogehogehoge0gAU5b2GcdUOzO1eR8jyX3UbpfmYC-oFqZE0VBr658gJ0MvMBUKoBmp3h00VWO2a2E2dBH8aD3QcbYAgrEaJN914jPPwWCFKjzCGjMe8PNbarbarU",
+  "keys": {
+    "auth":  "cfoobarjl529A_X-bw",
+    "p256dh": "BPT8zHapyg8fbcGJqzNlKXj0gTdSmKOcVn4V7rwaceFwf2h_ZXqiQtLHya7KeMPd3YXTrPoSt39AqtCTrzWX45o"
+  }
+}
