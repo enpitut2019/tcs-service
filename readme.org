@@ -5,13 +5,16 @@
 - [X] task system
 - [X] implement service (logic) => ref.  https://github.com/MokkeMeguru/tcs-service
 - [X] connect to database
+- [ ] some code refinement
+- [ ] ssl connection using Let's encrypt (Docker-Compose's service...)
 
 ** Installation
 
 write `profiles.clj` from below code as it is.
 
 ※ database-url is 
-`jdbc:<db-program>://<db-name>/<relation-name>?user=<db's username>&password=<db's password>`
+*jdbc:<db-program>://<db-name>/<relation-name>?user=<db's username>&password=<db's password>*
+ref. docker-compose.yml
 
 #+begin_src clojure:profiles.clj
 {:dev {:env {
@@ -43,11 +46,39 @@ lein repl
 
 accessing http://localhost:3000, You can see swagger view. Call any endpoint according to its description.
 
-** Options
+** Project Structure 
+*** Spec
+validation for the data in the whole service.
 
+ex. user's name length is more than 1 and less than 64.
 
-** Bugs
+Subproject: https://github.com/MokkeMeguru/tcs-spec
 
+*** Handler
+handler for the rest api. It will be the connection between the server and the client.  
+rough service Implementation with Swagger-ui.  
+
+Subproject: https://github.com/MokkeMeguru/tcs-handler  
+
+*** DB
+DB connection and migration settings for the server.  
+We must NOT implement SQL or any attribution.
+
+Subproject: https://github.com/MokkeMeguru/tcs-db
+
+*** Service
+Connect whole subproject. And implement LOGIC.
+
+Subproject = Project = this repository.
+
+*** Notification
+NOTICE: this project was separated with this server.  
+So Notification Server is another Project.
+
+ref1. https://github.com/MokkeMeguru/tcc-notification-debug
+ref2. https://github.com/MokkeMeguru/tcs-notification
+
+TODO: We will Implement Notification Server as Node.js script.
 
 ** That You Think
 
