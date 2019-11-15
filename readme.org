@@ -10,6 +10,8 @@
 
 write `profiles.clj` from below code as it is.
 
+※ database-url is 
+`jdbc:<db-program>://<db-name>/<relation-name>?user=<db's username>&password=<db's password>`
 
 #+begin_src clojure:profiles.clj
 {:dev {:env {
