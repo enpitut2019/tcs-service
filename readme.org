@@ -30,7 +30,13 @@ write `profiles.clj` from below code as it is.
 docker-compose build
 docker-compose run --service-port repl
 lein repl
-(start)
+=> (start)
+;; begin some log  and show the message ":initialized!"
+;; we running the server
+=> (exit) ;; stop the server
+git pull ;; for update
+lein repl
+;; ...
 #+end_src
 
 accessing http://localhost:3000, You can see swagger view. Call any endpoint according to its description.
