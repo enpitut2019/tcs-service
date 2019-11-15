@@ -1,6 +1,7 @@
 (ns task-cabinet-server.handler.user-device
   (:require [clojure.spec.alpha :as s]
-            [clojure.walk :as w]))
+            [clojure.walk :as w]
+            [task-cabinet-server.service.user-device :as devices]))
 
 (s/def ::user-id int?)
 (s/def ::endpoint string?)
@@ -23,15 +24,17 @@
     :body ::add-device-params}
    :responses {200 {:body {:result ::add-device-response}}}
    :handler
-   (fn [{:keys [parameters headers path-params]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           id (-> path-params :user-id Integer/parseInt)
-           {{:keys [endpoint keys]} :body} parameters
-           {:keys [auth p256dh]} keys]
-       (if (and (= id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
-         {:status 201
-          :body {:result {:endpoint endpoint :keys keys}}}
-         {:status 403})))})
+   devices/add-device-handler
+   ;; (fn [{:keys [parameters headers path-params]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         id (-> path-params :user-id Integer/parseInt)
+   ;;         {{:keys [endpoint keys]} :body} parameters
+   ;;         {:keys [auth p256dh]} keys]
+   ;;     (if (and (= id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
+   ;;       {:status 201
+   ;;        :body {:result {:endpoint endpoint :keys keys}}}
+   ;;       {:status 403})))
+   })
 
 (def remove-device
   {:summary "remove a device receives webpush"
@@ -42,14 +45,16 @@
     :body ::remove-device-params}
    :responses {200 nil}
    :handler
-   (fn [{:keys [parameters headers path-params]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           id (-> path-params :user-id Integer/parseInt)
-           {{:keys [endpoint keys]} :body} parameters
-           {:keys [auth p256dh]} keys]
-       (if (and (= id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
-         {:status 200}
-         {:status 403})))})
+   devices/remove-device-handler
+   ;; (fn [{:keys [parameters headers path-params]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         id (-> path-params :user-id Integer/parseInt)
+   ;;         {{:keys [endpoint keys]} :body} parameters
+   ;;         {:keys [auth p256dh]} keys]
+   ;;     (if (and (= id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK"))
+   ;;       {:status 200}
+   ;;       {:status 403})))
+   })
 
 (def remove-all-device
   {:summary "remove a device receives webpush"
@@ -60,13 +65,15 @@
     :body ::remove-all-device-params}
    :responses {200 nil}
    :handler
-   (fn [{:keys [parameters headers path-params]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           id (-> path-params :user-id Integer/parseInt)
-           password (-> parameters :body :password)]
-         (if (and (= id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK") (= password "testPass10"))
-        {:status 200}
-        {:status 403})))})
+   devices/remove-all-device-handler
+   ;; (fn [{:keys [parameters headers path-params]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         id (-> path-params :user-id Integer/parseInt)
+   ;;         password (-> parameters :body :password)]
+   ;;       (if (and (= id 1) (= authorization "gXqi4mnXg8KyuSKS5XlK") (= password "testPass10"))
+   ;;      {:status 200}
+   ;;      {:status 403})))
+   })
 
 (defn user-device-app [env]
   ["/tcs/users/:user-id"

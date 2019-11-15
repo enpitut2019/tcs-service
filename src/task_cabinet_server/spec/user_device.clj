@@ -22,7 +22,7 @@
 (s/def ::auth
   (s/and string?
          utils/check-trim
-         #(< 20 (count %) 255)))
+         #(< 10 (count %) 255)))
 
 (s/def ::p256dh
   (s/and string?

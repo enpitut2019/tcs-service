@@ -84,3 +84,13 @@
 (jdbc/execute! connecter ["SELECT * FROM task where id = 7"])
 (njs/find-by-keys connecter :task {:id 2, :user_id 1})
 
+(jdbc/execute! connecter ["SELECT * FROM user_device"])
+(second (jdbc/execute! connecter ["SELECT * FROM user_token where user_id = 1"]))
+
+;; (njs/insert! connecter :user_device
+;;              {:user_id 1
+;;               :created_at (sql-now)
+;;               :endpoint "https://fcm.googleapis.com/fcm/send/f8ZrPSJxQVk:APA91bF2DMtsF8Wyhogehogehoge0gAU5b2GcdUOzO1eR8jyX3UbpfmYC-oFqZE0VBr658gJ0MvMBUKoBmp3h00VWO2a2E2dBH8aD3QcbYAgrEaJN914jPPwWCFKjzCGjMe8PNbarbarU"
+;;               :auth "cfoobarjl529A_X-bw"
+;;               :p256dh "BPT8zHapyg8fbcGJqzNlKXj0gTdSmKOcVn4V7rwaceFwf2h_ZXqiQtLHya7KeMPd3YXTrPoSt39AqtCTrzWX45o"})
+
