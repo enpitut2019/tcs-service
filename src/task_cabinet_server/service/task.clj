@@ -177,6 +177,7 @@
       (if (-> (token/check-token-exists? db user-id authorization) count zero?)
         {:status 403}
         (let [task (tsql/get-task db :id id)]
+          (println "task" task)
           (if (or (:is_deleted task)
                   (:finished_at task)
                   (zero? (tsql/complete-task db {:id id})))
