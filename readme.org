@@ -13,7 +13,7 @@
 write `profiles.clj` from below code as it is.
 
 ※ database-url is 
-*jdbc:<db-program>://<db-name>/<relation-name>?user=<db's username>&password=<db's password>*
+*jdbc:<db-program>://<db-name>/<relation-name>?user=<db's username>&password=<db's password>*    
 ref. docker-compose.yml
 
 #+begin_src clojure:profiles.clj
