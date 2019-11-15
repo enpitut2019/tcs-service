@@ -82,13 +82,12 @@
         id (-> path-params :id Integer/parseInt)]
     (if-not (and (s/valid? ::tokens/token authorization) (s/valid? ::users/id id ))
       {:status 400}
-      (do (println (token/check-token-exists? db id authorization))
-       (if-not (token/check-token-exists? db id authorization)
-         {:status 403}
-         {:status 200
-          :body
-          {:result
-           (select-keys (usql/get-user db :id id) [:name :created_at :email])}})))))
+      (if-not (-> (token/check-token-exists? db id authorization) count zero?)
+        {:status 403}
+        {:status 200
+         :body
+         {:result
+          (select-keys (usql/get-user db :id id) [:name :created_at :email])}}))))
 
 (s/def ::update-user-info (s/keys :req-un [::users/name ::users/email ::users/password]))
 (defn update-user-info-handler
