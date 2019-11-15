@@ -3,8 +3,8 @@
 - [X] authorization system
 - [X] user system
 - [X] task system
-- [ ] implement service (logic) => ref.  https://github.com/MokkeMeguru/tcs-service
-- [ ] connect to database
+- [X] implement service (logic) => ref.  https://github.com/MokkeMeguru/tcs-service
+- [X] connect to database
 
 ** Installation
 
