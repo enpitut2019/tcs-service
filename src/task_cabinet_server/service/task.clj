@@ -179,10 +179,11 @@
         (let [task (tsql/get-task db :id id)]
           (println "task" task)
           (if (or (:is_deleted task)
-                  (:finished_at task)
-                  (zero? (tsql/complete-task db {:id id})))
+                  (:finished_at task))
             {:status 404}
-            {:status 200}))))))
+            (do
+              (tsql/complete-task db {:id id})
+              {:status 200})))))))
 
 (s/def ::all boolean?)
 (defn get-list-task-handler
