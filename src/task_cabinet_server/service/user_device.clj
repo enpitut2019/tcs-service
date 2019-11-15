@@ -74,9 +74,9 @@
                 res (assoc-in res [:keys :auth] (:auth res))
                 res (assoc-in res [:keys :p256dh] (:p256dh res))
                 res (dissoc res :auth)
-                res (dissoc res :p256dh)])
-          {:status 201
-           :body {:result res}})))))
+                res (dissoc res :p256dh)]
+            {:status 201
+             :body {:result res}}))))))
 
 (defn remove-device-handler
   "
