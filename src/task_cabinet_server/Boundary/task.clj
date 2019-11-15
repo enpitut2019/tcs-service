@@ -60,9 +60,7 @@
                  #(:finished_at %) (update :finished_at utils/long-to-sql))]
       (utils/update! spec :task task idm)))
   (complete-task [{:keys [spec]} idm]
-    (let [res (utils/update! spec :task {:finished_at (utils/sql-now)} idm)
-          res (into {} (remove (fn [[k v]] (nil? v))) res)]
-      (println "result!" res)
+    (let [res (utils/update! spec :task {:finished_at (utils/sql-now)} idm)]
       res))
   (get-list-task [{:keys [spec]} user-id all]
     (let [res (if all
