@@ -82,7 +82,7 @@
         id (-> path-params :id Integer/parseInt)]
     (if-not (and (s/valid? ::tokens/token authorization) (s/valid? ::users/id id ))
       {:status 400}
-      (if-not (-> (token/check-token-exists? db id authorization) count zero?)
+      (if (-> (token/check-token-exists? db id authorization) count zero?)
         {:status 403}
         {:status 200
          :body
