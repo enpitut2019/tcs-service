@@ -72,20 +72,20 @@
 
 
 
-(defonce connecter (jdbc/get-datasource {:jdbcUrl  "jdbc:postgresql://dev_db:5432/tcs_db?user=meguru&password=emacs"}))
+;; (defonce connecter (jdbc/get-datasource {:jdbcUrl  "jdbc:postgresql://dev_db:5432/tcs_db?user=meguru&password=emacs"}))
 
-;; (jdbc/execute-one! connecter ["SELECT * FROM users where id = 1"])
- (njs/update! connecter :users {:email "meguru.mokke@gmail.com" :is_deleted false :name "MokkeMeguru" } {:id 1}) 
- (jdbc/execute! connecter ["SELECT * FROM user_token"])
+;; ;; (jdbc/execute-one! connecter ["SELECT * FROM users where id = 1"])
+;;  (njs/update! connecter :users {:email "meguru.mokke@gmail.com" :is_deleted false :name "MokkeMeguru" } {:id 1}) 
+;;  (jdbc/execute! connecter ["SELECT * FROM user_token"])
 
+
+;; ;; (jdbc/execute! connecter ["SELECT * FROM user_device"])
+;;  ;; (-> (sql-now) sql-to-long println )
+;; (jdbc/execute! connecter ["SELECT * FROM task where id = 7"])
+;; (njs/find-by-keys connecter :task {:id 2, :user_id 1})
 
 ;; (jdbc/execute! connecter ["SELECT * FROM user_device"])
- ;; (-> (sql-now) sql-to-long println )
-(jdbc/execute! connecter ["SELECT * FROM task where id = 7"])
-(njs/find-by-keys connecter :task {:id 2, :user_id 1})
-
-(jdbc/execute! connecter ["SELECT * FROM user_device"])
-(second (jdbc/execute! connecter ["SELECT * FROM user_token where user_id = 1"]))
+;; (second (jdbc/execute! connecter ["SELECT * FROM user_token where user_id = 1"]))
 
 ;; (njs/insert! connecter :user_device
 ;;              {:user_id 1
