@@ -128,7 +128,7 @@
                   :operationsSorter "alpha"}})
       (ring/create-default-handler))
     {:middleware
-     [;; util/cors-handler ;; remove cors-handler for development...
+     [ util/my-wrap-cors
       wrap-with-logger
       ]}))
 

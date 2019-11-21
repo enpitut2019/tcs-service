@@ -43,7 +43,9 @@
   - 400 invalid args
   - 401 unauthorized"
   [{:keys [parameters db]}]
+  (println "reached!")
   (let [{{:keys [email password] :as body} :body} parameters]
+    (println parameters)
       (if-not (s/valid? ::user-login-body body) {:status 400}
            (if-let [user-info (conform-user db email password)]
              {:status 200
