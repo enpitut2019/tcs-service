@@ -49,7 +49,7 @@
 
 (defn insert! [spec table-key m]
   (with-open [conn (jdbc/get-connection (:datasource spec))]
-    (println "m" m)
+    ;; (println "m" m)
     (njs/insert! conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 
 (defn update! [spec table-key m idm]
@@ -65,7 +65,7 @@
     (njs/find-by-keys conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 
 (defn get-by-id [spec table-key k v]
-  (println "get! "k v)
+  ;; (println "get! "k v)
   (with-open [conn (jdbc/get-connection (:datasource spec))]
     (njs/get-by-id conn table-key v k {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 

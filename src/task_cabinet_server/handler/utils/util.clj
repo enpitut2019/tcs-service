@@ -1,5 +1,7 @@
-(ns task-cabinet-server.handler.utils.util)
-  ;; (:require [ring.middleware.cors :refer [wrap-cors]])
+(ns task-cabinet-server.handler.utils.util
+  (:require [taoensso.timbre :as timbre])
+  ;;(:require [ring.middleware.cors :refer [wrap-cors]])
+  )
   
 
 ;; https://enpitut2019.github.io/
@@ -15,11 +17,12 @@
   allow connections from the web app."
   [handler]
   (fn [request]
+    (timbre/warn "Access Origin: " (-> request :headers (get "origin")))
     (let [response (handler request)]
       (-> response
           (assoc-in [:headers "Access-Control-Allow-Origin"] "*")
           (assoc-in [:headers "Access-Control-Allow-Headers"] "Content-Type")
           (assoc-in [:headers "Access-Control-Allow-Methods"] "*")))))
 
-;; (defn cors-handler [handler]
-;;   (wrap-cors handler :access-control-allow-origin default-origin))
+;; (defn my-wrap-cors [handler]
+;;  (wrap-cors handler :access-control-allow-origin default-origin))
