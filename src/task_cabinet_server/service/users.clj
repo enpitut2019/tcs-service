@@ -60,7 +60,7 @@
   - 400 invalid args
   - 409 conflict"
   [{:keys [parameters db] :as params}]
-  (print parameters)
+  (print (s/explain ::user-create-body body))
   (let [{{:keys [name password email] :as body} :body}   parameters]
     (if-not (s/valid? ::user-create-body body)  {:status 400}
             (if (already-exists? db email)
