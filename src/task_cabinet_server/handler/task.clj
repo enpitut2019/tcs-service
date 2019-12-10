@@ -43,7 +43,6 @@
 
 (def create-task
   {:summary "create a task"
-   :description "for debug id \"1 \"  authorization  \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters
    {:path ::path-params
@@ -70,7 +69,6 @@
 
 (def get-task-info
   {:summary  "get a task-info"
-   :description "for debug user-id and id \"1 \"  authorization  \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters
    {:path ::task-path-params}
@@ -91,7 +89,6 @@
 
 (def delete-task
   {:summary  "delete a task-info"
-   :description "for debug user-id and id \"1 \"  authorization  \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters
    {:path ::task-path-params}
@@ -110,7 +107,6 @@
 
 (def update-task
   {:summary "update a task information"
-   :description "for debug user and task id  \"1\" authorization \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters
    {:path ::task-path-params
@@ -138,7 +134,6 @@
 
 (def complete-task
   {:summary "complete a task"
-   :description "for debug user and task id  \"1\" authorization \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters {:path ::task-path-params}
    :responses {200 nil}
@@ -157,7 +152,6 @@
 
 (def get-list-task
   {:summary "get tasks"
-   :description "for debug id and user-id \"1\" authorization \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters {:path ::path-params
                 :query {:all ::all}}

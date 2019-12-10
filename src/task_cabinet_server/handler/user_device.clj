@@ -17,7 +17,6 @@
 
 (def add-device
   {:summary "add a device receives webpush"
-   :description "for debug id \"1\" authorization  \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters
    {:path ::path-params
@@ -38,7 +37,6 @@
 
 (def remove-device
   {:summary "remove a device receives webpush"
-   :description "for debug id \"1\" authorization \"gXqi4mnXg8KyuSKS5XlK\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters
    {:path ::path-params
@@ -58,7 +56,6 @@
 
 (def remove-all-device
   {:summary "remove a device receives webpush"
-   :description "for debug id \"1\" authorization \"gXqi4mnXg8KyuSKS5XlK\" pass \"testPass10\""
    :swagger {:security [{:ApiKeyAuth []}]}
    :parameters
    {:path ::path-params
