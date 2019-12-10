@@ -9,65 +9,6 @@
    [clojure.spec.alpha :as s]
    [clojure.walk :as w]))
 
-;;; debug functions ;;;
-;; (def tmp-task-list
-;;   [{:id 1
-;;     :name "Implement Server"
-;;     :deadline 1573493099290
-;;     :estimate 40
-;;     :created_at 1572566411400}
-;;    {:id 2
-;;     :name "Implement WebPush"
-;;     :deadline 1572567452000
-;;     :estimate 80
-;;     :created_at 1572566431400
-;;     :finished_at 1572567432000
-;;     :category "server"}
-;;    {:id 3
-;;     :name "Implement Authorization"
-;;     :deadline 1572566451400
-;;     :estimate 60
-;;     :created_at 1572566441400
-;;     :category "server"}
-;;    {:id 4
-;;     :name "Re: check database structure"
-;;     :deadline 1572566952000
-;;     :estimate 100
-;;     :created_at 1572566411500
-;;     :finished_at 1572567431000}])
-
-;; (defn get-task
-;;   "m has key :id"
-;;   [db k v]
-;;   (first (filter
-;;      #(= (:id % ) v) tmp-task-list)))
-
-;; (defn create-task
-;;   [db m]
-;;   (assoc (assoc m :created_at (utils/now-long)) :id 1))
-
-;; (defn delete-task
-;;   "deleted 1
-;; not found 0"
-;;   [db id]
-;;   1)
-
-;; (defn update-task
-;;   [db m idm]
-;;   1)
-
-;; (defn complete-task
-;;   "m
-;;   {:id id}"
-;;   [db idm]
-;;   1)
-
-;; (defn get-list-task
-;;   "m
-;;   {:user-id user-id}
-;;   all is boolean for filter finished_at (complete_task)"
-;;   [db m all]
-;;   tmp-task-list)
 ;;; handler & specs ;;;
 (s/def ::create-task
   (s/keys :req-un [::tasks/name ::tasks/deadline ::tasks/estimate]
@@ -80,7 +21,7 @@
   [{:keys [parameters headers path-params db]}]
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         user-id (-> path-params :user-id Integer/parseInt)
-        {:keys [body]} parameters] 
+        {:keys [body]} parameters]
     (print (s/explain ::create-task body))
     (if-not (and (s/valid? ::create-task body) (s/valid? ::tokens/token authorization)
                  (s/valid? ::users/id user-id))
@@ -128,7 +69,7 @@
       (if  (zero? (count (token/check-token-exists? db user-id authorization)))
         {:status 403}
         (let
-            [res (tsql/delete-task db id)]
+            [res (tsql/delete-task db {:id id :user_id user_id})]
           (println "Res " res)
           (if (zero? res)
                  {:status 404}
@@ -155,7 +96,7 @@
       (if (-> (token/check-token-exists? db user-id authorization) count zero?)
         {:status 403}
         (if (or (:is_deleted (tsql/get-task db :id id))
-                (zero? (tsql/update-task db body  {:id id})))
+                (zero? (tsql/update-task db body  {:id id :user_id user_id})))
           {:status 404}
           {:status 200
            :body {:result
@@ -174,17 +115,20 @@
         user-id (-> path-params :user-id Integer/parseInt)]
     (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id)
                  (s/valid? ::tokens/token authorization))
-      {:status 400}
+      {:status 400 :message
+       {:token (s/explain ::tokens/token authorization)
+        :users_id (s/explain ::users/id user_id)
+        :task_id (s/explain ::tasks/id id)}}
       (if (-> (token/check-token-exists? db user-id authorization) count zero?)
         {:status 403}
         (let [task (tsql/get-task db :id id)]
-          (println "task" task)
           (if (or (:is_deleted task)
                   (:finished_at task))
-            {:status 404}
+            {:status 404 :message "resource not found"}
             (do
-              (tsql/complete-task db {:id id})
-              {:status 200})))))))
+              (if (zero? (tsql/complete-task db {:id id :user_id id}))
+                {:status 404 :message "resource not found"}
+                {:status 200}))))))))
 
 (s/def ::all boolean?)
 (defn get-list-task-handler

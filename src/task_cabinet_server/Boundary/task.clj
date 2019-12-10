@@ -10,7 +10,7 @@
   (get-task [db k v])
   (find-task [db m])
   (create-task [db task])
-  (delete-task [db task-id])
+  (delete-task [db m])
   (update-task [db task idm])
   (complete-task [db idm])
   (get-list-task [db user-id all]))
@@ -49,9 +49,9 @@
      (update :deadline utils/sql-to-long)
      (dissoc :user_id)
      (dissoc :is_deleted))) ;; TODO UPDATE
-  (delete-task [{:keys [spec]} task-id]
+  (delete-task [{:keys [spec]} m]
     (utils/update! spec :task
-                   {:is_deleted true :updated_at (utils/sql-now)} {:id task-id}))
+                   {:is_deleted true :updated_at (utils/sql-now)} m))
   (update-task [{:keys [spec]} task idm]
     (let [task (cond-> task
                  #(:deadline %) (update :deadline utils/long-to-sql)
