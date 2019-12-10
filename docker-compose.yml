@@ -23,7 +23,13 @@ services:
       - "lib_data:/root/.m2"
     depends_on:
       - dev_db
-
+  webpush:
+    build: ./pushService/
+    command: /bin/bash
+    volumes:
+      - "./pushService:/usr/app"
+    depends_on:
+      - dev_db
 volumes:
   dev_tcs_db:
   lib_data:
