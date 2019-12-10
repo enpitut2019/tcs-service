@@ -25,9 +25,14 @@
     (print (s/explain ::create-task body))
     (if-not (and (s/valid? ::create-task body) (s/valid? ::tokens/token authorization)
                  (s/valid? ::users/id user-id))
-      {:status 400}
+      {:status 400
+       :message
+       {:task (s/explain ::create-task body)
+        :token (s/explain ::tokens/token authorization)
+        :user_id (s/explain ::users/id user-id)}}
       (if (-> (token/check-token-exists? db user-id authorization) count zero?)
-        {:status 403}
+        {:status 403
+         :message "authorization failed"}
         {:status 201
          :body {:result
                 (into {} (remove (fn [[k v]] (nil? v)))
@@ -45,13 +50,19 @@
         id (-> path-params :id Integer/parseInt)]
     (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id)
                  (s/valid? ::tokens/token authorization))
-      {:status 400}
+      {:status 400
+       :message
+       {:user_id (s/explain ::users/id user-id)
+        :task_id (s/explain ::tasks/id id)
+        :token (s/explain ::tokens/token authorization)}}
       (if (zero? (count (token/check-token-exists? db user-id authorization)))
-        {:status 403}
+        {:status 403
+         :message "authorization failed"}
         (if-let [task (tsql/find-task db {:id id :user_id user-id})]
           {:status 201
            :body {:result task}}
-          {:status 404})))))
+          {:status 404
+           :message "resource is not found"})))))
 
 (defn delete-task-handler
   "delete a task
@@ -65,14 +76,18 @@
         id (-> path-params :id Integer/parseInt)]
     (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id)
                  (s/valid? ::tokens/token authorization))
-      {:status 400}
+      {:status 400
+       :message
+       {:user_id (s/explain ::users/id user-id)
+        :task_id (s/explain ::tasks/id id)
+        :token (s/explain ::tokens/token authorization)}}
       (if  (zero? (count (token/check-token-exists? db user-id authorization)))
-        {:status 403}
+        {:status 403 :message "authorization failed"}
         (let
-            [res (tsql/delete-task db {:id id :user_id user_id})]
+            [res (tsql/delete-task db {:id id :user_id user-id})]
           (println "Res " res)
           (if (zero? res)
-                 {:status 404}
+                 {:status 404 :message "resource not found"}
                  {:status 200}))))))
 
 (s/def ::update-task
@@ -92,12 +107,19 @@
     (if-not (and (s/valid? ::users/id user-id) (s/valid? ::tasks/id id)
                  (s/valid? ::tokens/token authorization)
                  (s/valid? ::update-task body))
-      {:status 400}
+      {:status 400
+       :message
+       {:user_id (s/explain ::users/id user-id)
+        :task_id (s/explain ::tasks/id id)
+        :token (s/explain ::tokens/token authorization)
+        :task (s/explain ::update-task body)}}
       (if (-> (token/check-token-exists? db user-id authorization) count zero?)
-        {:status 403}
+        {:status 403
+         :message "authorization failed"}
         (if (or (:is_deleted (tsql/get-task db :id id))
-                (zero? (tsql/update-task db body  {:id id :user_id user_id})))
-          {:status 404}
+                (zero? (tsql/update-task db body  {:id id :user_id user-id})))
+          {:status 404
+           :message "resource not found"}
           {:status 200
            :body {:result
                   (select-keys (tsql/get-task db :id id)
@@ -117,10 +139,11 @@
                  (s/valid? ::tokens/token authorization))
       {:status 400 :message
        {:token (s/explain ::tokens/token authorization)
-        :users_id (s/explain ::users/id user_id)
+        :users_id (s/explain ::users/id user-id)
         :task_id (s/explain ::tasks/id id)}}
       (if (-> (token/check-token-exists? db user-id authorization) count zero?)
-        {:status 403}
+        {:status 403
+         :message "resource not found"}
         (let [task (tsql/get-task db :id id)]
           (if (or (:is_deleted task)
                   (:finished_at task))
@@ -139,8 +162,12 @@
     (if-not (and (s/valid? ::users/id user-id)
                  (s/valid? ::tokens/token authorization)
                  (s/valid? ::all all))
-      {:status 400}
-      (if-not (token/check-token-exists? db  user-id authorization)
+      {:status 400
+       :message
+       {:user_id (s/explain ::users/id user-id)
+        :token (s/explain ::tokens/token authorization)
+        :all (s/explain ::all all)}}
+      (if (-> (token/check-token-exists? db  user-id authorization) count zero?)
         {:status 403}
         {:status 200
          :body {:result
