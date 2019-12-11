@@ -30,7 +30,7 @@ ref. docker-compose.yml
 #+end_src
 
 ** Usage
-
+Main Server
 #+begin_src shell
 docker-compose build
 docker-compose run --service-port repl
@@ -45,6 +45,12 @@ lein repl
 #+end_src
 
 accessing http://localhost:3000, You can see swagger view. Call any endpoint according to its description.
+
+Push Server
+#+begin_src shell
+docker-compose run --service-port webpush
+yarn start
+#+end_src
 
 ** Project Structure 
 *** Spec
