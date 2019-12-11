@@ -1,3 +1,3 @@
 [submodule "pushService"]
 	path = pushService
-	url = ./pushService/
+	url = https://github.com/MokkeMeguru/tcs-notification-ts
