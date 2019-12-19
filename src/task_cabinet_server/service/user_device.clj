@@ -47,6 +47,31 @@
       (utils/check-password candidate password))))
 
 ;;; handler & specs ;;;
+(defn check-device-handler
+  "check devices
+  returns:
+  - 200 ok exist
+  - 409 conflict
+  - 400 invalid args"
+  [{:keys [parameters headers path-params db]}]
+  (let [{:keys [authorization]} (w/keywordize-keys headers)
+        user-id (-> path-params :user-id Integer/parseInt)
+        {{:keys [endpoint keys]} :body} parameters
+        {:keys [auth p256dh]} keys]
+    (if-not (and (s/valid? ::tokens/token authorization)
+                 (s/valid? ::devices/endpoint endpoint)
+                 (s/valid? ::devices/auth auth)
+                 (s/valid? ::devices/p256dh p256dh)
+                 (s/valid? ::users/id user-id))
+      {:status 400}
+      (if (-> (token/check-token-exists? db user-id authorization) count zero?)
+        {:status 403}
+        (if-not (-> (udsql/check-device-exists? db
+                                                {:user_id user-id :endpoint endpoint :auth auth :p256dh p256dh})
+                    count zero?)
+          {:status 200 :body {:is_exist 1}}
+          {:status 200 :body {:is_exist 0}})))))
+
 (defn add-device-handler
   "add devices
   returns:
