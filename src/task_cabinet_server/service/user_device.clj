@@ -69,8 +69,8 @@
         (if-not (-> (udsql/check-device-exists? db
                                                 {:user_id user-id :endpoint endpoint :auth auth :p256dh p256dh})
                     count zero?)
-          {:status 200 :body {:is_exist 1}}
-          {:status 200 :body {:is_exist 0}})))))
+          {:status 200 :body {:result {:is_exist 1}}}
+          {:status 200 :body {:result {:is_exist 0}}})))))
 
 (defn add-device-handler
   "add devices
