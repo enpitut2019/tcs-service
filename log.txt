@@ -18,3 +18,4 @@ r/ms 1}
 19-12-20 05:41:28 8674d6995418 INFO [ring.logger:288] - {:request-method :options, :uri "/tcs/users/3/check-device", :server-name "clj_tcs_service", :ring.logger/type :starting}
 19-12-20 05:41:28 8674d6995418 INFO [ring.logger:288] - {:request-method :options, :uri "/tcs/users/3/check-device", :server-name "clj_tcs_service", :ring.logger/type :finish, :status 200, :ring.l
 ogger/ms 1}                                                                                                                                            
+
