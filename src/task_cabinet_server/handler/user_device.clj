@@ -8,13 +8,14 @@
 (s/def ::auth string?)
 (s/def ::p256dh string?)
 (s/def ::password string?)
+(s/def ::is_exist int?)
 (s/def ::path-params (s/keys :req-un [::user-id]))
 (s/def ::keys (s/keys :req-un [::auth ::p256dh]))
 (s/def ::add-device-params (s/keys :req-un [::endpoint ::keys]))
 (s/def ::add-device-response (s/keys :req-un [::endpoint ::keys]))
 (s/def ::remove-device-params (s/keys :req-un [::endpoint ::keys]))
 (s/def ::remove-all-device-params (s/keys :req-un [::password]))
-(s/def ::check-device-response (s/keys :req-un [:is_exist]))
+(s/def ::check-device-response (s/keys :req-un [::is_exist]))
 
 (def add-device
   {:summary "add a device receives webpush"

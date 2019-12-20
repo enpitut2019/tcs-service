@@ -20,6 +20,7 @@
     (timbre/warn "Access Origin: " (-> request :headers (get "origin")))
     (let [response (handler request)]
       (-> response
+          (assoc-in [:headers "Access-Control-Allow-Credentials"] true)
           (assoc-in [:headers "Access-Control-Allow-Origin"] "*")
           (assoc-in [:headers "Access-Control-Allow-Headers"] "Content-Type")
           (assoc-in [:headers "Access-Control-Allow-Methods"] "*")))))
