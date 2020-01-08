@@ -49,7 +49,6 @@
 
 (defn insert! [spec table-key m]
   (with-open [conn (jdbc/get-connection (:datasource spec))]
-    ;; (println "m" m)
     (njs/insert! conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 
 (defn update! [spec table-key m idm]
@@ -65,16 +64,62 @@
     (njs/find-by-keys conn table-key m {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
 
 (defn get-by-id [spec table-key k v]
-  ;; (println "get! "k v)
   (with-open [conn (jdbc/get-connection (:datasource spec))]
-    (njs/get-by-id conn table-key v k {:return-keys true :builder-fn rs/as-unqualified-lower-maps} )))
+    (njs/get-by-id conn table-key v k {:return-keys true :builder-fn rs/as-unqualified-lower-maps})))
 
+(defn upsert-builder [table-key m confks update_funcstr]
+  (let [ks (map name (keys m))
+        confs (map name confks)
+        vs (vals m)]
+    (concat
+     [(clojure.string/join " "
+                            ["insert into" (name table-key)
+                             "("  (clojure.string/join "," ks) ")"
+                             "values (" (clojure.string/join "," (-> vs count (repeat "?"))) ")"
+                             "on conflict" "(" (clojure.string/join "," confs) ")"
+                             "do" "update set"
+                             update_funcstr])]
+     vs)))
 
+(defn upsert! [spec table-key m confks update_funcstr]
+  (with-open [conn (jdbc/get-connection (:datasource spec))
+              upsert-vec (upsert-builder table-key m confks update_funcstr)]
+    (jdbc/execute-one! conn upsert-vec)))
 
+;; -------------------------- here is for debug ------------------------------------
 
+;; connection to db
 ;; (defonce connecter (jdbc/get-datasource {:jdbcUrl  "jdbc:postgresql://dev_db:5432/tcs_db?user=meguru&password=emacs"}))
 
-;; ;; (jdbc/execute-one! connecter ["SELECT * FROM users where id = 1"])
+;; user creation (from web's swagger)
+;; check user exististance
+;; (jdbc/execute-one! connecter ["SELECT * FROM users where id = 1"])
+
+;; (jdbc/execute-one! connecter
+;;                    ;; ["insert into select_alg (user_id, alg, value) VALUES (?,?, 1) on conflict (user_id, alg) do update set value = select_alg.value + 1" (int 1) (int 2)]
+;;                    (upsert-builder
+;;                     :select_alg
+;;                     {:user_id 1 :alg 1 :value 1}
+;;                     [:user_id :alg]
+;;                     "value = select_alg.value + 1"))
+
+;; (upsert-builder
+;;  :select_alg
+;;  {:user_id 1 :alg 1 :value 1}
+;;  [:user_id :alg]
+;;  "value = select_alg.value + 1")
+
+;; (jdbc/execute! connecter ["SELECT * FROM select_alg where user_id = 1"]
+;;                {:return-keys true  :builder-fn rs/as-unqualified-lower-maps})
+
+;; (jdbc/execute-one! connecter ["DELETE FROM select_alg"])
+
+;; (let [select-alg-raws (njs/find-by-keys connecter
+;;                                         :select_alg
+;;                                         {:user_id 1}
+;;                                         {:return-keys true :builder-fn rs/as-unqualified-lower-maps})]
+;;   select-alg-raws)
+
 ;;  (njs/update! connecter :users {:email "meguru.mokke@gmail.com" :is_deleted false :name "MokkeMeguru" } {:id 1}) 
 ;;  (jdbc/execute! connecter ["SELECT * FROM user_token"])
 

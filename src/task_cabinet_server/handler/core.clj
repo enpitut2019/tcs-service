@@ -25,7 +25,8 @@
 
    [task-cabinet-server.handler.users :refer [users-app]]
    [task-cabinet-server.handler.user-device :refer [user-device-app]]
-   [task-cabinet-server.handler.task :refer [task-app]]))
+   [task-cabinet-server.handler.task :refer [task-app]]
+   [task-cabinet-server.handler.user-alg :refer [user-alg-app]]))
 
 
 (defn wrap-db [handler db]
@@ -46,6 +47,7 @@
        (users-app env)
        (user-device-app env)
        (task-app env)
+       (user-alg-app env)
        ["/files"
         {:swagger {:tags ["files"]}}
         ["/upload"
