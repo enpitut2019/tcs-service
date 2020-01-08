@@ -15,6 +15,9 @@
 
 (extend-protocol Users
   task_cabinet_server.Boundary.utils.sql.Boundary
+  (get-users [{:keys [spec]}]
+    (with-open [conn (jdbc/get-connection (:datasource spec))]
+     (jdbc/execute! conn ["SELECT * FROM users"])))
   (get-user [{:keys [spec]} k v]
     (let [res (cond->
                (utils/get-by-id spec :users  k v)
@@ -75,11 +78,13 @@
 ;; for debug
  ;; (defonce inst (task-cabinet-server.Boundary.utils.sql/->Boundary {:datasource (hikari-cp.core/make-datasource {:jdbc-url (environ.core/env :database-url)})}))
 
+;; (get-users inst)
+
 
 
 ;; ;; found return all columns
-;; (get-user inst
-;;           {:users/email  "test@gmail.com"})
+;;(get-user inst
+;;          {:users/email  "test@gmail.com"})
 
 ;; ;; not found return nil
 ;; (get-user inst
