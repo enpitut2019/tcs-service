@@ -1,0 +1,26 @@
+[ERROR] { WebPushError: Received unexpected response code
+    at IncomingMessage.<anonymous> (/usr/app/node_modules/web-push/src/web-push-lib.js:341:20)
+    at emitNone (events.js:111:20)
+    at IncomingMessage.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:139:11)
+    at process._tickDomainCallback (internal/process/next_tick.js:219:9)
+  name: 'WebPushError',
+  message: 'Received unexpected response code',
+  statusCode: 410,
+  headers: 
+   { 'access-control-allow-headers': 'content-encoding,encryption,crypto-key,ttl,encryption-key,content-type,authorization',
+     'access-control-allow-methods': 'POST',
+     'access-control-allow-origin': '*',
+     'access-control-expose-headers': 'location,www-authenticate',
+     'cache-control': 'max-age=86400',
+     'content-type': 'application/json',
+     date: 'Fri, 20 Dec 2019 08:01:00 GMT',
+     server: 'nginx',
+     'strict-transport-security': 'max-age=31536000;includeSubDomains',
+     'content-length': '179',
+     connection: 'Close' },
+  body: '{"code": 410, "errno": 106, "error": "", "more_info": "http://autopush.readthedocs.io/en/latest/http.html#error-codes", "mess
+age": "Request did not validate No such subscription"}',                                                                             
+  endpoint: 'https://updates.push.services.mozilla.com/wpush/v2/gAAAAABd_Hd_PI6BBJ2oA4Y2VwIMAFoqvNSFg3NSPg7SnqqN-Z74-zzlnBRcn6uCTg2Hfw
+7Ys9TyX6FrWD7jZnJkK5LIZQF5_tjnNzmvLFgKFnkKqcDUgg0aOiusu-uU87NVcb7tsvZlBYw7PhfPCzz-7UF9kJcue-_r78hVQNcn132F7oCQzbA' }    

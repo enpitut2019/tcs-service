@@ -57,7 +57,8 @@
                  #(:deadline %) (update :deadline utils/long-to-sql)
                  #(:created_at %) (update :created_at utils/long-to-sql)
                  #(:updated_at %) (update :updated_at utils/long-to-sql)
-                 #(:finished_at %) (update :finished_at utils/long-to-sql))]
+                 ;; #(:finished_at %) (update :finished_at utils/long-to-sql)
+                       )]
       (utils/update! spec :task task idm)))
   (complete-task [{:keys [spec]} idm]
     (let [res (utils/update! spec :task {:finished_at (utils/sql-now)} idm)]

@@ -101,6 +101,7 @@
       {;;:reitit.middleware/transform dev/print-request-diffs ;; pretty diffs
        ;;:validate spec/validate ;; enable spec validation for route data
        ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
+       ;; :ring/default-options-handler
        :exception pretty/exception
        :data {:coercion reitit.coercion.spec/coercion
               :muuntaja m/instance
