@@ -82,9 +82,9 @@
      vs)))
 
 (defn upsert! [spec table-key m confks update_funcstr]
-  (with-open [conn (jdbc/get-connection (:datasource spec))
-              upsert-vec (upsert-builder table-key m confks update_funcstr)]
-    (jdbc/execute-one! conn upsert-vec)))
+  (let [upsert-vec (upsert-builder table-key m confks update_funcstr)]
+    (with-open [conn (jdbc/get-connection (:datasource spec))]
+      (:next.jdbc/update-count (jdbc/execute-one! conn upsert-vec)))))
 
 ;; -------------------------- here is for debug ------------------------------------
 

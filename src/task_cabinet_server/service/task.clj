@@ -22,7 +22,7 @@
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         user-id (-> path-params :user-id Integer/parseInt)
         {:keys [body]} parameters]
-    (print (s/explain ::create-task body))
+    ;; (print (s/explain ::create-task body))
     (if-not (and (s/valid? ::create-task body) (s/valid? ::tokens/token authorization)
                  (s/valid? ::users/id user-id))
       {:status 400

@@ -5,7 +5,7 @@
 
 (defprotocol Select-Alg
   (update-counter! [db user-id alg])
-  (get-counter [db user-id alg]))
+  (get-counter [db user-id]))
 
 (extend-protocol Select-Alg
   task_cabinet_server.Boundary.utils.sql.Boundary
@@ -15,8 +15,8 @@
           confks [:user_id :alg]
           update_funcstr "value = select_alg.value + 1"]
       (util/upsert! spec :select_alg m confks update_funcstr)))
-  (get-counter [{:keys [spec]} user-id alg]
-    (util/find-by-m spec :select_alg {:user_id user-id :alg alg})))
+  (get-counter [{:keys [spec]} user-id]
+    (util/find-by-m spec :select_alg {:user_id user-id})))
 
 ;; (update-counter! inst  1 1)
 
