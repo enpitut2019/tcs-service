@@ -42,7 +42,6 @@
   [{:keys [headers path-params db]}]
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         user-id (-> path-params :user-id Integer/parseInt)]
-    (println "get-user-alg" user-id " " authorization)
     (cond
       (not (s/valid? ::users/id user-id))
       {:status 400 :body (s/explain-data ::users/id user-id)}
@@ -51,10 +50,10 @@
       (-> (token/check-token-exists? db user-id authorization) count zero?)
       {:status 403}
       :default
-      (let [res (->>
-                 (select-algb/get-counter db user-id)
-                 (apply max-key :value)
-                 :alg)]
+      (let [base (select-algb/get-counter db user-id)
+            res (if (-> base count zero?)
+                  -1
+                  (:alg  (apply max-key :value base)))]
         {:status 200
          :body {:type res}}))))
 
@@ -63,7 +62,6 @@
   [{:keys [headers path-params db]}]
   (let [{:keys [authorization]} (w/keywordize-keys headers)
         user-id (-> path-params :user-id Integer/parseInt)]
-    (println "get-user-alg" user-id " " authorization)
     (cond
       (not (s/valid? ::users/id user-id))
       {:status 400 :body (s/explain-data ::users/id user-id)}
@@ -75,6 +73,5 @@
       (let [res (->>
                  (select-algb/get-counter db user-id)
                  (map (fn [m] {:type (:alg m) :value (:value m)})))]
-        (print (select-algb/get-counter db user-id))
         {:status 200
          :body {:stats res}}))))
