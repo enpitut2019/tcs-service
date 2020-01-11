@@ -103,6 +103,7 @@
 ;;                     [:user_id :alg]
 ;;                     "value = select_alg.value + 1"))
 
+;; (jdbc/execute-one! connecter ["SELECT * FROM select_alg where id = 1"])
 ;; (upsert-builder
 ;;  :select_alg
 ;;  {:user_id 1 :alg 1 :value 1}
@@ -112,7 +113,7 @@
 ;; (jdbc/execute! connecter ["SELECT * FROM select_alg where user_id = 1"]
 ;;                {:return-keys true  :builder-fn rs/as-unqualified-lower-maps})
 
-;; (jdbc/execute-one! connecter ["DELETE FROM select_alg"])
+;;  (jdbc/execute-one! connecter ["DELETE FROM select_alg"])
 
 ;; (let [select-alg-raws (njs/find-by-keys connecter
 ;;                                         :select_alg
