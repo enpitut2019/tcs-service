@@ -78,12 +78,20 @@
       (migrate! :down database-url migration-log))))
 
 ;; for debug
-(defn reset-migrate []
+(defn reset-migrate
+  ([]
+   (let [database-url (environ.core/env :database-url)
+         config  {:datastore (jdbc/sql-database {:connection-uri database-url})
+                  :migrations (jdbc/load-resources default-migration-folder)}]
+     (rrepl/rollback config (count (:migrations config)))
+     (rrepl/migrate config)))
+  ([n]
   (let [database-url (environ.core/env :database-url)
-        config  {:datastore (jdbc/sql-database {:connection-uri database-url})
-                 :migrations (jdbc/load-resources default-migration-folder)}]
-    (rrepl/rollback config (count (:migrations config)))
-    (rrepl/migrate config)))
+         config  {:datastore (jdbc/sql-database {:connection-uri database-url})
+                  :migrations (jdbc/load-resources default-migration-folder)}]
+     (rrepl/rollback config n)
+     (rrepl/migrate config)))
+   )
 
 ;; (reset-migrate)
 
