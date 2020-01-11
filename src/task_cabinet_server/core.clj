@@ -4,7 +4,8 @@
             [taoensso.timbre :as timbre]
             [clojure.java.io :as io]
             [integrant.core :as ig]
-            [integrant.repl :as igr]))
+            [integrant.repl :as igr]
+            [task-cabinet-server.Boundary.utils.migrate :refer [reset-migrate]]))
 
 
 (timbre/set-level! :info)
