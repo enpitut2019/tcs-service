@@ -75,5 +75,6 @@
       (let [res (->>
                  (select-algb/get-counter db user-id)
                  (map (fn [m] {:type (:alg m) :value (:value m)})))]
+        (print (select-algb/get-counter db user-id))
         {:status 200
          :body {:stats res}}))))
