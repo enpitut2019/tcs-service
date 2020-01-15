@@ -2,6 +2,7 @@
   (:require
    [task-cabinet-server.Boundary.fixed-alg :as falgb]
    [task-cabinet-server.spec.user-fixed-alg :as falgs]
+   [task-cabinet-server.service.user-fixed-alg :as falg]
    [clojure.spec.alpha :as s]
    [clojure.walk :as w]))
 
@@ -21,20 +22,22 @@
     :body ::add-user-fixed-alg-params}
    :responses {200 {:body {:result boolean?}}}
    :handler
-   (fn [{:keys [parameters headers path-params]}]
-     (let [{:keys [authorization]} (w/keywordize-keys headers)
-           id (-> path-params :user-id Integer/parseInt)
-           {{:keys [type]} :body} parameters
-           ]
-       (cond
-         (not
-          (and
-           (s/valid? ::falgs/type type)
-           (s/valid? ::auth authorization)))
-         {:status 403}
-         :default
-         {:status 200
-          :body {:result true}})))})
+   falg/add-user-fixed-alg!
+   ;; (fn [{:keys [parameters headers path-params]}]
+   ;;   (let [{:keys [authorization]} (w/keywordize-keys headers)
+   ;;         id (-> path-params :user-id Integer/parseInt)
+   ;;         {{:keys [type]} :body} parameters
+   ;;         ]
+   ;;     (cond
+   ;;       (not
+   ;;        (and
+   ;;         (s/valid? ::falgs/type type)
+   ;;         (s/valid? ::auth authorization)))
+   ;;       {:status 403}
+   ;;       :default
+   ;;       {:status 200
+   ;;        :body {:result true}})))
+   })
 
 (def get-user-fixed-alg
   {:summary "get user fixed algorithm for the user"
@@ -43,13 +46,14 @@
    {:path ::path-params}
    :responses {200 {:body {:type integer?}}}
    :handler
-   (fn [{:keys [parameters headers path-params]}]
-     {:status 200 :body {:type 1}})})
+   falg/get-user-fixed-alg
+   ;; (fn [{:keys [parameters headers path-params]}]
+   ;;   {:status 200 :body {:type 1}})
+   })
 
 (defn user-fixed-alg-app [env]
   ["/tcs/users/:user-id"
    {:swagger {:tags ["fixed-algorithm"]}}
    ["/fixed-algorithm"
     {:post add-user-fixed-alg!
-     :get get-user-fixed-alg
-     }]])
+     :get get-user-fixed-alg}]])
