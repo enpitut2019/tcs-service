@@ -25,7 +25,9 @@
 
    [task-cabinet-server.handler.users :refer [users-app]]
    [task-cabinet-server.handler.user-device :refer [user-device-app]]
-   [task-cabinet-server.handler.task :refer [task-app]]))
+   [task-cabinet-server.handler.task :refer [task-app]]
+   [task-cabinet-server.handler.user-alg :refer [user-alg-app]]
+   [task-cabinet-server.handler.user-fixed-alg :refer [user-fixed-alg-app]]))
 
 
 (defn wrap-db [handler db]
@@ -46,6 +48,8 @@
        (users-app env)
        (user-device-app env)
        (task-app env)
+       (user-alg-app env)
+       (user-fixed-alg-app env)
        ["/files"
         {:swagger {:tags ["files"]}}
         ["/upload"
@@ -99,6 +103,7 @@
       {;;:reitit.middleware/transform dev/print-request-diffs ;; pretty diffs
        ;;:validate spec/validate ;; enable spec validation for route data
        ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
+       ;; :ring/default-options-handler
        :exception pretty/exception
        :data {:coercion reitit.coercion.spec/coercion
               :muuntaja m/instance
@@ -128,7 +133,7 @@
                   :operationsSorter "alpha"}})
       (ring/create-default-handler))
     {:middleware
-     [;; util/cors-handler ;; remove cors-handler for development...
+     [ util/my-wrap-cors
       wrap-with-logger
       ]}))
 

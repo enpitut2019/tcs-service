@@ -10,4 +10,5 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
-prod-migration.log 
+prod-migration.log
+dev-migration.log

@@ -23,7 +23,17 @@ services:
       - "lib_data:/root/.m2"
     depends_on:
       - dev_db
-
+  webpush:
+    build: ./pushService/
+    command: /bin/bash
+    volumes:
+      - "./pushService:/usr/app"
+      - "node_modules:/usr/app/node_modules"
+    ports:
+      - 49998:49998
+    depends_on:
+      - dev_db
 volumes:
   dev_tcs_db:
   lib_data:
+  node_modules:

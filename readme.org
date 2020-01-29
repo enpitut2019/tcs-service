@@ -1,12 +1,14 @@
 * task-cabinet-server
+- ポスター: https://drive.google.com/file/d/1J4j1GQqenvIiSD3VehcdUhq7rBe8s4To/view?usp=sharing     
+
+- PV: https://drive.google.com/file/d/1qiI1k8IruuECl0Kq4YGcOCu7aRZVy2BI/view?usp=sharing
 ** Processing
 - [X] authorization system
 - [X] user system
 - [X] task system
 - [X] implement service (logic) => ref.  https://github.com/MokkeMeguru/tcs-service
 - [X] connect to database
-- [ ] some code refinement
-- [ ] ssl connection using Let's encrypt (Docker-Compose's service...)
+- [X] some code refinement
 
 ** Installation
 
@@ -30,7 +32,7 @@ ref. docker-compose.yml
 #+end_src
 
 ** Usage
-
+Main Server
 #+begin_src shell
 docker-compose build
 docker-compose run --service-port repl
@@ -45,6 +47,12 @@ lein repl
 #+end_src
 
 accessing http://localhost:3000, You can see swagger view. Call any endpoint according to its description.
+
+Push Server
+#+begin_src shell
+docker-compose run --service-port webpush
+yarn start
+#+end_src
 
 ** Project Structure 
 *** Spec
